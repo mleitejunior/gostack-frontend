@@ -25,13 +25,13 @@ function App() {
   }
 
   async function handleRemoveRepository(id) {
-    const indexOfRepository = repositories.find(repo => repo.id === id).id;
+    try {
+      await api.delete(`repositories/${id}`);
 
-    repositories.splice(indexOfRepository , 1);
-
-    await api.delete(`repositories/${id}`);
-
-    setRepositories([repositories]);
+      setRepositories(repositories.filter(repo => repo.id !== id));
+    } catch (err) {
+      alert("Erro ao deletar o repositorio");
+    }
   }
 
   return (
@@ -39,7 +39,7 @@ function App() {
       <ul data-testid="repository-list">
         {repositories.map((repo) => {
           return (
-            <li key={repo.id}>{repo.id} = {repo.title}
+            <li key={repo.id}>{repo.title}
             <button onClick={() => handleRemoveRepository(repo.id)}>
               Remover
             </button>
